@@ -1,6 +1,6 @@
 Name:		perl-Net-SSLeay
 Version:	1.35
-Release:	10%{?dist}
+Release:	10%{?dist}.1
 Summary:	Perl extension for using OpenSSL
 Group:		Development/Libraries
 License:	OpenSSL
@@ -11,6 +11,12 @@ Patch0:		perl-Net-SSLeay-svn252.patch
 Patch1:     Net-SSLeay-1.35-Add-support-for-the-basic-operations-necessary-to-su.patch
 # Export OBJ_txt2nid, in upstream 1.43, bug #1044401, related to bug #1078084
 Patch2:     Net-SSLeay-1.35-Export-OBJ_txt2nid.patch
+# Add binding for TLS context and method functions, bug #1375183,
+# fixed in 1.55
+Patch3:     Net-SSLeay-1.35-Added-support-for-TLSV1_1-and-TLSV1_2-methods-with-S.patch
+# Recognize Net::SSLeay::ssl_version values for TLSv1.1 and TLSv1.2,
+# bug #1375183, fixed in 1.59
+Patch4:     Net-SSLeay-1.35-Added-support-for-tlsv1.1-tlsv1.2-via-Net-SSLeay-ssl.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:	perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 BuildRequires:	perl(ExtUtils::MakeMaker), openssl-devel
@@ -40,6 +46,10 @@ so you can write servers or clients for more complicated applications.
 %patch1 -p1
 # Export OBJ_txt2nid
 %patch2 -p1
+# Add TLS binding
+%patch3 -p1
+# TLS version via Net::SSLeay::ssl_version
+%patch4 -p1
 
 %{__chmod} -c 644 examples/*
 %{__perl} -pi -e 's|/usr/local/bin/perl|%{__perl}|' examples/*.pl
@@ -79,6 +89,9 @@ PERL_MM_USE_DEFAULT=1 %{__perl} Makefile.PL \
 %{_mandir}/man3/Net::SSLeay*.3*
 
 %changelog
+* Mon Apr 25 2016 Petr Pisar <ppisar@redhat.com> - 1.35-10.1
+- Allow to specify 1.1 and 1.2 TLS protocol versions (bug #1375183)
+
 * Wed Mar 19 2014 Petr Pisar <ppisar@redhat.com> - 1.35-10
 - Add ECDHE support (bug #1044401)
 - Export OBJ_txt2nid (bug #1044401)
