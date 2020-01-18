@@ -1,6 +1,6 @@
 Name:		perl-Net-SSLeay
 Version:	1.55
-Release:	1%{?dist}
+Release:	3%{?dist}
 Summary:	Perl extension for using OpenSSL
 Group:		Development/Libraries
 License:	OpenSSL
@@ -92,6 +92,12 @@ rm -rf %{buildroot}
 %{_mandir}/man3/Net::SSLeay::Handle.3pm*
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 1.55-3
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 1.55-2
+- Mass rebuild 2013-12-27
+
 * Sat Jun  8 2013 Paul Howarth <paul@city-fan.org> - 1.55-1
 - update to 1.55
   - added support for TLSV1_1 and TLSV1_2 methods with SSL_CTX_tlsv1_1_new(),
