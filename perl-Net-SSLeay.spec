@@ -1,11 +1,13 @@
 Name:		perl-Net-SSLeay
 Version:	1.55
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Perl extension for using OpenSSL
 Group:		Development/Libraries
 License:	OpenSSL
 URL:		http://search.cpan.org/dist/Net-SSLeay/
 Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/Net-SSLeay-%{version}.tar.gz
+# Add ECDHE support, in upstream 1.56, bug #1316379
+Patch0:         Net-SSLeay-1.55-Add-support-for-the-basic-operations-necessary-to-su.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 BuildRequires:	openssl, openssl-devel
 # =========== Module Build ===========================
@@ -51,6 +53,7 @@ so you can write servers or clients for more complicated applications.
 
 %prep
 %setup -q -n Net-SSLeay-%{version}
+%patch0 -p1
 
 # Fix permissions in examples to avoid bogus doc-file dependencies
 chmod -c 644 examples/*
@@ -92,6 +95,9 @@ rm -rf %{buildroot}
 %{_mandir}/man3/Net::SSLeay::Handle.3pm*
 
 %changelog
+* Thu Mar 10 2016 Jitka Plesnikova <jplesnik@redhat.com> - 1.55-4
+- Add ECDHE support (bug #1316379)
+
 * Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 1.55-3
 - Mass rebuild 2014-01-24
 
