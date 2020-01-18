@@ -1,0 +1,18 @@
+diff -up Net-SSLeay-1.55/SSLeay.xs.orig Net-SSLeay-1.55/SSLeay.xs
+--- Net-SSLeay-1.55/SSLeay.xs.orig	2017-02-15 12:32:41.981371128 +0100
++++ Net-SSLeay-1.55/SSLeay.xs	2017-02-15 12:32:41.985371110 +0100
+@@ -4992,14 +4992,5 @@ SSL_export_keying_material(ssl, outlen,
+ 
+ #endif
+ 
+-#if OPENSSL_VERSION_NUMBER >= 0x10002000L && !defined(OPENSSL_NO_DANE)
+-
+-void
+-SSL_get_tlsa_record_byname(name, port, type);
+-        char * name
+-        int    port
+-        int    type
+-
+-#endif
+ 
+ #define REM_EOF "/* EOF - SSLeay.xs */"

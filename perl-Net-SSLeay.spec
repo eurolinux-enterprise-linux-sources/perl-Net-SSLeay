@@ -1,6 +1,6 @@
 Name:		perl-Net-SSLeay
 Version:	1.55
-Release:	4%{?dist}
+Release:	6%{?dist}
 Summary:	Perl extension for using OpenSSL
 Group:		Development/Libraries
 License:	OpenSSL
@@ -8,6 +8,18 @@ URL:		http://search.cpan.org/dist/Net-SSLeay/
 Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/Net-SSLeay-%{version}.tar.gz
 # Add ECDHE support, in upstream 1.56, bug #1316379
 Patch0:         Net-SSLeay-1.55-Add-support-for-the-basic-operations-necessary-to-su.patch
+# Recognize Net::SSLeay::ssl_version values for TLSv1.1 and TLSv1.2,
+# bug #1335028, fixed in 1.59
+Patch1:         Net-SSLeay-1.55-Added-support-for-tlsv1.1-tlsv1.2-via-Net-SSLeay-ssl.patch
+# Deleted support for SSL_get_tlsa_record_byname, it is not included in
+# OpenSSL git master, bug# 1422435, fixed in 1.56
+Patch2:         Net-SSLeay-1.55-Deleted-support-for-SSL_get_tlsa_record_byname.patch
+# Removed a test which fails due to changes in openssl 1.0.1h and later,
+# fixed in 1.64
+Patch3:         Net-SSLeay-1.55-Removed-test-failing-against-1.0.1h.patch
+# Removed tests which fails due to changes in openssl 1.0.1n and later,
+# fixed in 1.70
+Patch4:         Net-SSLeay-1.55-Removed-tests-failing-against-1.0.1n.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 BuildRequires:	openssl, openssl-devel
 # =========== Module Build ===========================
@@ -54,6 +66,10 @@ so you can write servers or clients for more complicated applications.
 %prep
 %setup -q -n Net-SSLeay-%{version}
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 # Fix permissions in examples to avoid bogus doc-file dependencies
 chmod -c 644 examples/*
@@ -95,6 +111,13 @@ rm -rf %{buildroot}
 %{_mandir}/man3/Net::SSLeay::Handle.3pm*
 
 %changelog
+* Wed Feb 15 2017 Jitka Plesnikova <jplesnik@redhat.com> - 1.55-6
+- Deleted support for SSL_get_tlsa_record_byname (bug #1422435)
+- Removed tests which fails due to changes openssl 1.0.1h and later
+
+* Thu Oct 06 2016 Petr Pisar <ppisar@redhat.com> - 1.55-5
+- Allow to specify 1.1 and 1.2 TLS protocol versions (bug #1335028)
+
 * Thu Mar 10 2016 Jitka Plesnikova <jplesnik@redhat.com> - 1.55-4
 - Add ECDHE support (bug #1316379)
 

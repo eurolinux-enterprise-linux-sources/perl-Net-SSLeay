@@ -1,0 +1,64 @@
+From 6e4347e65ffaf89316907dff0d56d25a8cfbc514 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20P=C3=ADsa=C5=99?= <ppisar@redhat.com>
+Date: Thu, 6 Oct 2016 11:10:28 +0200
+Subject: [PATCH] Added support for tlsv1.1 tlsv1.2 via
+ $Net::SSLeay::ssl_version
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Ported to 1.55:
+
+commit 617881711e375fa3677204ff8ce0647cce563b43
+Author: mikem-guest <mikem-guest@008bcf62-b706-0410-a62e-d321f1c85ab9>
+Date:   Mon May 5 21:37:08 2014 +0000
+
+         Added support for tlsv1.1 tlsv1.2 via $Net::SSLeay::ssl_version. Patch
+         from Andreas Mohr.
+         Improve examples in 'Using other perl modules based on
+         Net::SSLeay'. Patched by Andreas Mohr.
+
+    git-svn-id: svn://svn.debian.org/svn/net-ssleay@402 008bcf62-b706-0410-a62e-d321f1c85ab9
+
+Signed-off-by: Petr Písař <ppisar@redhat.com>
+---
+ lib/Net/SSLeay.pm | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/lib/Net/SSLeay.pm b/lib/Net/SSLeay.pm
+index 6441434..054619d 100644
+--- a/lib/Net/SSLeay.pm
++++ b/lib/Net/SSLeay.pm
+@@ -30,6 +30,8 @@ $Net::SSLeay::trace = 0;  # Do not change here, use
+ # 2 = insist on v2 SSL protocol
+ # 3 = insist on v3 SSL
+ # 10 = insist on TLSv1
++# 11 = insist on TLSv1.1
++# 12 = insist on TLSv1.2
+ # 0 or undef = guess (v23)
+ #
+ $Net::SSLeay::ssl_version = 0;  # don't change here, use
+@@ -910,6 +912,20 @@ sub new_x_ctx {
+     }
+     elsif ($ssl_version == 3)  { $ctx = CTX_v3_new(); }
+     elsif ($ssl_version == 10) { $ctx = CTX_tlsv1_new(); }
++    elsif ($ssl_version == 11) {
++	unless (exists &Net::SSLeay::CTX_tlsv1_1_new) {
++	    warn "ssl_version has been set to 11, but this version of OpenSSL has been compiled without TLSv1.1 support";
++	    return undef;
++	}
++        $ctx = CTX_tlsv1_1_new;
++    }
++    elsif ($ssl_version == 12) {
++	unless (exists &Net::SSLeay::CTX_tlsv1_2_new) {
++	    warn "ssl_version has been set to 12, but this version of OpenSSL has been compiled without TLSv1.2 support";
++	    return undef;
++	}
++        $ctx = CTX_tlsv1_2_new;
++    }
+     else                       { $ctx = CTX_new(); }
+     return $ctx;
+ }
+-- 
+2.7.4
+
